@@ -1,0 +1,21 @@
+{
+  "foo": "bar",
+  "num": 5.0,
+  "map": {
+    "romeo": {
+      "juliet": "foo"
+    }
+  },
+  "nested": [
+    { "str": "ing" },
+    { "foo": "bar" },
+    {
+      "deep": {
+        "lee": "woo"
+      }
+    }
+  ],
+  "arr": ["ayy"],
+  "null": null,
+  "bool": true
+}
