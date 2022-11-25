@@ -15,22 +15,26 @@ func main() {
   app := &cli.App{
     Name:  "kgrep",
     Usage: "Used to grep keys in JSON or YAML",
-    UsageText: "cat foo.json | kgrep [options] regexp",
+    UsageText: "output | kgrep [options] regexp",
     Flags: []cli.Flag{
       &cli.IntFlag{
         Name:    "match_count",
         Aliases: []string{"m"},
-        Usage:   "The first n number of matches to return",
+        Usage:   "The first n number (above 0) of matches to return",
       },
     },
     Action: func(cCtx *cli.Context) error {
       match_count := cCtx.Int("match_count")
       user_regex := cCtx.Args().Get(0)
 
-      kgrep(
+      matches := Kgrep(
         user_regex,
         match_count,
       )
+
+      for _, match := range matches {
+        fmt.Println(match)
+      }
 
       return nil
     },
@@ -41,20 +45,18 @@ func main() {
   }
 }
 
-func kgrep(user_regex string, match_count int) {
+func Kgrep(user_regex string, match_count int) []string {
   input := read_stdin()
-  var key_values map[string]interface{}
-  json.Unmarshal(input, &key_values)
+  var data_structure map[string]interface{}
+  json.Unmarshal(input, &data_structure)
 
-  matches := find_matching_keys(user_regex, key_values)
+  matches := find_matching_keys(user_regex, data_structure)
 
   if match_count > 0 {
     matches = matches[0:match_count]
   }
 
-  for _, match := range matches {
-    fmt.Println(match)
-  }
+  return matches
 }
 
 func read_stdin() []byte {
@@ -65,9 +67,9 @@ func read_stdin() []byte {
   return stdin
 }
 
-func find_matching_keys(rx string, jsawn map[string]interface{}) []string {
+func find_matching_keys(rx string, data_structure map[string]interface{}) []string {
   matches := make([]string, 0, 100)
-  for k, v := range jsawn {
+  for k, v := range data_structure {
     switch v.(type) {
     case map[string]interface{}:
       matches = append(matches, find_matching_keys(rx, v.(map[string]interface{}))...)

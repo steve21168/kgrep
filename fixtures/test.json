@@ -1,12 +1,13 @@
 {
   "foo": "bar",
+  "test": "ing",
   "num": 5.0,
   "map": {
     "romeo": {
       "juliet": "foo"
     }
   },
-  "nested": [
+  "nested_a": [
     { "str": "ing" },
     { "foo": "bar" },
     {
